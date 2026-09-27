@@ -1,0 +1,103 @@
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import Navbar from './components/Navbar.jsx'
+import Footer from './components/Footer.jsx'
+import CartDrawer from './components/CartDrawer.jsx'
+import Home from './pages/Home.jsx'
+import Products from './pages/Products.jsx'
+import Categories from './pages/Categories.jsx'
+import ProductDetail from './pages/ProductDetail.jsx'
+import AboutUs from './pages/AboutUs.jsx'
+import ContactUs from './pages/ContactUs.jsx'
+import GetEstimate from './pages/GetEstimate.jsx'
+import FireworksOverlay from './components/FireworksOverlay.jsx'
+
+import './admin/admin.css'
+import { AdminAuthProvider } from './admin/AdminAuthContext.jsx'
+import ProtectedRoute from './admin/ProtectedRoute.jsx'
+import AdminLayout from './admin/AdminLayout.jsx'
+import AdminLogin from './admin/pages/AdminLogin.jsx'
+import ProductsTab from './admin/pages/ProductsTab.jsx'
+import OrdersTab from './admin/pages/OrdersTab.jsx'
+import EstimatesTab from './admin/pages/EstimatesTab.jsx'
+import CategoriesTab from './admin/pages/CategoriesTab.jsx'
+import BannerTab from './admin/pages/BannerTab.jsx'
+import DashboardTab from './admin/pages/DashboardTab.jsx'
+import ReportsTab from './admin/pages/ReportsTab.jsx'
+import CustomersTab from './admin/pages/CustomersTab.jsx'
+import PaymentsTab from './admin/pages/PaymentsTab.jsx'
+import UsersTab from './admin/pages/UsersTab.jsx'
+import EstimateRequestsTab from './admin/pages/EstimateRequestsTab.jsx'
+import ExpensesTab from './admin/pages/ExpensesTab.jsx'
+import PurchaseTab from './admin/pages/PurchaseTab.jsx'
+import TaxesTab from './admin/pages/TaxesTab.jsx'
+
+
+function Storefront() {
+  return (
+    <>
+      <FireworksOverlay />
+      <Navbar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/get-estimate" element={<GetEstimate />} />
+        </Routes>
+      </main>
+      <Footer />
+      <CartDrawer />
+    </>
+  )
+}
+
+function AdminSection() {
+  return (
+    <AdminAuthProvider>
+      <Routes>
+        <Route path="login" element={<AdminLogin />} />
+        <Route
+          element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<DashboardTab />} />
+          <Route path="reports" element={<ReportsTab />} />
+          <Route path="products" element={<ProductsTab />} />
+          <Route path="orders" element={<OrdersTab />} />
+          <Route path="estimates" element={<EstimatesTab />} />
+          <Route path="estimate-requests" element={<EstimateRequestsTab />} />
+          <Route path="customers" element={<CustomersTab />} />
+          <Route path="categories" element={<CategoriesTab />} />
+          <Route path="banner" element={<BannerTab />} />
+          <Route path="expenses" element={<ExpensesTab />} />
+          <Route path="purchase" element={<PurchaseTab />} />
+          <Route path="taxes" element={<TaxesTab />} />
+          <Route path="payments" element={<PaymentsTab />} />
+          <Route path="users" element={<UsersTab />} />
+        </Route>
+      </Routes>
+    </AdminAuthProvider>
+  )
+}
+
+export default function App() {
+  const location = useLocation()
+  const isAdmin = location.pathname.startsWith('/admin')
+
+  if (isAdmin) {
+    return (
+      <Routes>
+        <Route path="/admin/*" element={<AdminSection />} />
+      </Routes>
+    )
+  }
+
+  return <Storefront />
+}
