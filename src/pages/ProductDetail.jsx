@@ -31,6 +31,7 @@ export default function ProductDetail() {
 
   const category = categories.find((c) => c.id === product.category)
   const qty = qtyOf(product.id)
+  const outOfStock = product.inStock === false
   const related = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4)
   const enquiryUrl = buildWhatsAppEnquiryUrl(pickField(product, 'name'), lang)
 
@@ -92,18 +93,27 @@ export default function ProductDetail() {
             <p style={{ fontWeight: 700, marginBottom: 10, fontSize: '0.85rem', color: 'rgba(27,19,48,0.6)' }}>
               {t('detail.qty')}
             </p>
-            <QuantitySelector
-              qty={qty}
-              size="lg"
-              onIncrement={() => increment(product)}
-              onDecrement={() => decrement(product)}
-              onChange={(v) => setQty(product, v)}
-            />
+            {outOfStock ? (
+              <p style={{ fontWeight: 700, color: '#dc2626' }}>{t('product.outOfStock') || 'Out of Stock'}</p>
+            ) : (
+              <QuantitySelector
+                qty={qty}
+                size="lg"
+                onIncrement={() => increment(product)}
+                onDecrement={() => decrement(product)}
+                onChange={(v) => setQty(product, v)}
+              />
+            )}
           </div>
 
           <div className="detail-actions">
-            <button className="btn btn-gold" onClick={() => qty === 0 && setQty(product, 1)}>
-              {t('cta.addToCart')}
+            <button
+              className="btn btn-gold"
+              disabled={outOfStock}
+              style={outOfStock ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
+              onClick={() => !outOfStock && qty === 0 && setQty(product, 1)}
+            >
+              {outOfStock ? (t('product.outOfStock') || 'Out of Stock') : t('cta.addToCart')}
             </button>
             <a href={enquiryUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline-ink">
               {t('cta.enquire')}

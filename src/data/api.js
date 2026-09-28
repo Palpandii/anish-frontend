@@ -12,6 +12,7 @@ function normalizeProduct(p) {
         image: p.image || '',
         youtube_id: p.youtubeId ?? p.youtube_id ?? '',
         video_url: p.videoUrl ?? p.video_url ?? '',
+        inStock: (p.inStock ?? p.in_stock) !== false,
     }
 }
 
