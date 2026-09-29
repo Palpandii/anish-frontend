@@ -28,9 +28,10 @@ const FEATURED_PRODUCT_NAMES = [
 const BRAND_LOGOS = [
   { src: '/brands/brands1.jpeg', name: 'STARVELL' },
   { src: '/brands/brands2.jpeg', name: 'RAVIKANNAN' },
-  { src: '/brands/brands3.jpeg', name: "BALA'S" },
-  { src: '/brands/brands4.jpeg', name: 'MERCURY' },
-  { src: '/brands/brands5.jpeg', name: 'SHREEMAN' },
+  { src: '/brands/brands3.jpeg', name: "AK" },
+  { src: '/brands/brands4.jpeg', name: 'VADIVEL' },
+  { src: '/brands/brands5.jpeg', name: "SURYAKALAA'S" },
+  { src: '/brands/brands6.jpeg', name: "PADIYAN" },
 ]
 
 export default function Home() {
