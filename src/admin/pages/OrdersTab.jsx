@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { useOutletContext } from 'react-router-dom'
-import { apiSend, UnauthorizedError } from '../adminApi.js'
+import { apiSend, apiDelete, UnauthorizedError } from '../adminApi.js'
 import { useAdminAuth } from '../AdminAuthContext.jsx'
 import { formatRupees, formatDate } from '../utils/format.js'
 
@@ -15,6 +15,7 @@ export default function OrdersTab() {
     const [statusFilter, setStatusFilter] = useState('ALL')
     const [sortOrder, setSortOrder] = useState('oldest')
     const [savingId, setSavingId] = useState(null)
+    const [deletingId, setDeletingId] = useState(null)
 
     const handleUnauthorized = useCallback(() => logout(), [logout])
 
@@ -46,6 +47,23 @@ export default function OrdersTab() {
             setError(err.message)
         } finally {
             setSavingId(null)
+        }
+    }
+
+    async function handleDelete(order) {
+        const serial = serialById.get(order.id)
+        if (!window.confirm(`Delete order #${serial} for ${order.customerName}? This can't be undone.`)) return
+        setDeletingId(order.id)
+        setError('')
+        try {
+            await apiDelete(`/api/orders/${order.id}`)
+            setOrders((list) => list.filter((o) => o.id !== order.id))
+            if (expandedId === order.id) setExpandedId(null)
+        } catch (err) {
+            if (err instanceof UnauthorizedError) return handleUnauthorized()
+            setError(err.message)
+        } finally {
+            setDeletingId(null)
         }
     }
 
@@ -119,6 +137,13 @@ export default function OrdersTab() {
                                             onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
                                         >
                                             {expandedId === order.id ? 'Hide items' : 'View items'}
+                                        </button>{' '}
+                                        <button
+                                            className="btn-icon-danger"
+                                            onClick={() => handleDelete(order)}
+                                            disabled={deletingId === order.id}
+                                        >
+                                            {deletingId === order.id ? 'Deleting…' : 'Delete'}
                                         </button>
                                     </td>
                                 </tr>
