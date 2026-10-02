@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom'
 import { apiSend, apiDelete, UnauthorizedError } from '../adminApi.js'
 import { useAdminAuth } from '../AdminAuthContext.jsx'
 import { formatRupees, formatDate } from '../utils/format.js'
+import { printOrderBill } from '../utils/printBill.js'
 
 const STATUSES = ['PENDING', 'CONFIRMED', 'PACKED', 'SHIPPED', 'DELIVERED', 'CANCELLED']
 
@@ -47,6 +48,14 @@ export default function OrdersTab() {
             setError(err.message)
         } finally {
             setSavingId(null)
+        }
+    }
+
+    function handlePrint(order) {
+        try {
+            printOrderBill(order, serialById.get(order.id))
+        } catch (err) {
+            setError(err.message || 'Could not open the print dialog.')
         }
     }
 
@@ -137,6 +146,9 @@ export default function OrdersTab() {
                                             onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
                                         >
                                             {expandedId === order.id ? 'Hide items' : 'View items'}
+                                        </button>{' '}
+                                        <button className="btn-secondary" onClick={() => handlePrint(order)}>
+                                            Print bill
                                         </button>{' '}
                                         <button
                                             className="btn-icon-danger"
