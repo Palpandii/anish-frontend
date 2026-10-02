@@ -31,7 +31,7 @@ const BRAND_LOGOS = [
   { src: '/brands/brands3.jpeg', name: "AK" },
   { src: '/brands/brands4.jpeg', name: 'VADIVEL' },
   { src: '/brands/brands5.jpeg', name: "SURYAKALAA'S" },
-  { src: '/brands/brands6.jpeg', name: "PADIYAN" },
+  { src: '/brands/brands6.jpeg', name: "PANDIYAN" },
 ]
 
 export default function Home() {
